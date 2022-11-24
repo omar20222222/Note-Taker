@@ -4,7 +4,7 @@ const fs = require("fs");
 const uuid = require("uuid");
 console.log(uuid.v4());
 
-const PORT = 3001;
+const PORT = 3002;
 
 const app = express();
 
@@ -14,11 +14,11 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
 app.get("/", (req, res) =>
-  res.sendFile(path.join(__dirname, "/public/index.html"))
+  res.sendFile(path.join(__dirname, "./public/index.html"))
 );
 
 app.get("/notes", (req, res) =>
-  res.sendFile(path.join(__dirname, "/public/notes.html"))
+  res.sendFile(path.join(__dirname, "./public/notes.html"))
 );
 
 app.get("/api/notes", (req, res) => {
@@ -40,6 +40,20 @@ app.post("/api/notes", (req, res) => {
     text,
     id: uuid.v4(),
   };
+
+  //start here
+
+  // get the db.json
+
+  let data = fs.readFileSync("./db/db.json", "utf-8");
+  let post = JSON.parse(data);
+  post.push(newNote);
+  data = JSON.stringify(post);
+  //append the new note to the file
+  fs.writeFileSync("./db/db.json", data, "utf-8");
+  //
+
+  res.status(200).json(JSON.parse(data));
 });
 
 app.listen(PORT, () =>
