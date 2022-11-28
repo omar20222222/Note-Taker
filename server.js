@@ -4,7 +4,7 @@ const fs = require("fs");
 const uuid = require("uuid");
 console.log(uuid.v4());
 
-const PORT = 3002;
+const PORT = process.env.port || 3001;
 
 const app = express();
 
